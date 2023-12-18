@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {  getAllRooms } from "../utils/ApiFunctions"
+import {deleteRoom, getAllRooms } from "../utils/ApiFunctions"
 import { Col, Row } from "react-bootstrap"
 import RoomFilter from "../common/RoomFilter"
 import RoomPaginator from "../common/RoomPaginator"
@@ -46,23 +46,23 @@ const ExistingRooms = () => {
 		setCurrentPage(pageNumber)
 	}
 
-	// const handleDelete = async (roomId) => {
-	// 	try {
-	// 		const result = await deleteRoom(roomId)
-	// 		if (result === "") {
-	// 			setSuccessMessage(`Room No ${roomId} was delete`)
-	// 			fetchRooms()
-	// 		} else {
-	// 			console.error(`Error deleting room : ${result.message}`)
-	// 		}
-	// 	} catch (error) {
-	// 		setErrorMessage(error.message)
-	// 	}
-	// 	setTimeout(() => {
-	// 		setSuccessMessage("")
-	// 		setErrorMessage("")
-	// 	}, 3000)
-	// }
+	const handleDelete = async (roomId) => {
+		try {
+			const result = await deleteRoom(roomId)
+			if (result === "") {
+				setSuccessMessage(`Room No ${roomId} was delete`)
+				fetchRooms()
+			} else {
+				console.error(`Error deleting room : ${result.message}`)
+			}
+		} catch (error) {
+			setErrorMessage(error.message)
+		}
+		setTimeout(() => {
+			setSuccessMessage("")
+			setErrorMessage("")
+		}, 3000)
+	}
 
 	const calculateTotalPages = (filteredRooms, roomsPerPage, rooms) => {
 		const totalRooms = filteredRooms.length > 0 ? filteredRooms.length : rooms.length
@@ -95,11 +95,11 @@ const ExistingRooms = () => {
 								<RoomFilter data={rooms} setFilteredData={setFilteredRooms} />
 							</Col>
 
-							{/* <Col md={6} className="d-flex justify-content-end">
+							<Col md={6} className="d-flex justify-content-end">
 								<Link to={"/add-room"}>
 									<FaPlus /> Add Room
 								</Link>
-							</Col> */}
+							</Col>
 						</Row>
 
 						<table className="table table-bordered table-hover">
@@ -118,7 +118,7 @@ const ExistingRooms = () => {
 										<td>{room.id}</td>
 										<td>{room.roomType}</td>
 										<td>{room.roomPrice}</td>
-										{/* <td className="gap-2">
+										<td className="gap-2">
 											<Link to={`/edit-room/${room.id}`} className="gap-2">
 												<span className="btn btn-info btn-sm">
 													<FaEye />
@@ -129,10 +129,10 @@ const ExistingRooms = () => {
 											</Link>
 											<button
 												className="btn btn-danger btn-sm ml-5"
-												onClick=''>
+												onClick={() => handleDelete(room.id)}>
 												<FaTrashAlt />
 											</button>
-										</td> */}
+										</td>
 									</tr>
 								))}
 							</tbody>
