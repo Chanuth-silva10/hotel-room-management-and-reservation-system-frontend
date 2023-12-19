@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Form, Button, Row, Col, Container } from "react-bootstrap"
 import moment from "moment"
+import { getAvailableRooms } from "../utils/ApiFunctions"
 import RoomSearchResults from "./RoomSearchResult"
 import RoomTypeSelector from "./RoomTypeSelector"
 
@@ -28,6 +29,17 @@ const RoomSearch = () => {
 			return
 		}
 		setIsLoading(true)
+		getAvailableRooms(searchQuery.checkInDate, searchQuery.checkOutDate, searchQuery.roomType)
+			.then((response) => {
+				setAvailableRooms(response.data)
+				setTimeout(() => setIsLoading(false), 2000)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+			.finally(() => {
+				setIsLoading(false)
+			})
 	}
 
 	const handleInputChange = (e) => {
